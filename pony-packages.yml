@@ -1,0 +1,264 @@
+---
+resources:
+- &ponyc-docker-latest
+  name: ponyc-docker-latest
+  type: docker-image
+  source:
+    repository: ponylang/ponyc
+    tag: latest
+
+
+
+- name: pony-ast-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-ast
+    branch: master
+
+- name: pony-capnp-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-capnp
+    branch: master
+
+- name: pony-inspect-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-inspect
+    branch: master
+
+- name: pony-llvm-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-llvm
+    branch: master
+
+- name: pony-pegasus-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-pegasus
+    branch: master
+
+- name: pony-rope-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-rope
+    branch: master
+
+- name: pony-sodium-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-sodium
+    branch: master
+
+- name: pony-stable-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-stable
+    branch: master
+
+- name: pony-unsafe-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-unsafe
+    branch: master
+
+- name: pony-zmq-git
+  type: git
+  source:
+    uri: https://github.com/jemc/pony-zmq
+    branch: master
+
+
+jobs:
+
+- name: pony-ast
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-ast-git
+    trigger: true
+  - task: pony-ast-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-ast-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/ast/test && ponyc && ./test"]
+
+- name: pony-capnp
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-capnp-git
+    trigger: true
+  - task: pony-capnp-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-capnp-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/capnp/test && ponyc && ./test"]
+
+- name: pony-inspect
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-inspect-git
+    trigger: true
+  - task: pony-inspect-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-inspect-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/inspect/test && ponyc && ./test"]
+
+- name: pony-llvm
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-llvm-git
+    trigger: true
+  - task: pony-llvm-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-llvm-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/llvm/test && ponyc && ./test"]
+
+- name: pony-pegasus
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-pegasus-git
+    trigger: true
+  - task: pony-pegasus-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-pegasus-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/pegasus/test && ponyc && ./test"]
+
+- name: pony-rope
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-rope-git
+    trigger: true
+  - task: pony-rope-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-rope-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/rope/test && ponyc && ./test"]
+
+- name: pony-sodium
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-sodium-git
+    trigger: true
+  - task: pony-sodium-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-sodium-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", "apt-get update && apt-get install -y libsodium-dev && cd src/sodium/test && ponyc && ./test"]
+
+- name: pony-stable
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-stable-git
+    trigger: true
+  - task: pony-stable-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-stable-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " make && make install"]
+
+- name: pony-unsafe
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-unsafe-git
+    trigger: true
+  - task: pony-unsafe-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-unsafe-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/unsafe/test && ponyc && ./test"]
+
+- name: pony-zmq
+  public: true
+  serial: true
+  plan:
+  - get: ponyc-docker-latest
+    trigger: true
+  - get: pony-zmq-git
+    trigger: true
+  - task: pony-zmq-test
+    config:
+      platform: linux
+      image_resource: *ponyc-docker-latest
+      inputs:
+      - name: pony-zmq-git
+        path: src
+      run:
+        path: sh
+        args: ["-c", " cd src/zmq/test && ponyc && ./test"]
+
